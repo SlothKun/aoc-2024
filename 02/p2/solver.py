@@ -17,23 +17,14 @@ def isDiffSafe(nb1, nb2):
     else:
         return False
 
-def isReportSafe(report, evo, isSafe, firstIter=True, locked=False, srange=2):
-   print(f"isSafe == {isSafe}, firstIter == {firstIter}, lock=={locked}")
-   print(f"report : {report}")
-   for lvlIdx in range(srange, len(report)):
-         if isSafe == 0 and not firstIter and not locked:
-            print("- - entered - -")
-            newReport = report
-            newReport.pop(lvlIdx-2)
-            isSafe += isReportSafe(newReport, evo, isSafe, locked=True, srange=1)
-            return isSafe
-         elif isSafe <= -1:
-            return -1
-         if getEvoStatus(report[lvlIdx-1], report[lvlIdx]) != evo \
-               or not isDiffSafe(report[lvlIdx-1], report[lvlIdx]):
-            isSafe -= 1
-         firstIter = False
-   return 1
+def isReportSafe(report, evo):
+   for lvlIdx in range(1, len(report)):
+      print(lvlIdx-1, " - ", lvlIdx)
+      if getEvoStatus(report[lvlIdx-1], report[lvlIdx]) != evo \
+            or not isDiffSafe(report[lvlIdx-1], report[lvlIdx]):
+         print("OCCURED ON : ", report[lvlIdx-1])
+         return lvlIdx-1
+   return None
 
 with open("../input", 'r') as ofile:
     for report in ofile.readlines():
@@ -43,11 +34,15 @@ with open("../input", 'r') as ofile:
 for report in reportList:
    print("--------")
    evo = getEvoStatus(report[0], report[1])
-   diff = isDiffSafe(report[0], report[1])
-   isSafe = 1 if evo != "eq" and diff else 0
-   print("IS SAFE : ", isSafe)
-   isSafe = isReportSafe(report, evo, isSafe, firstIter=False)
+   isSafe = isReportSafe(report, evo)
    print("ANSWER: ",isSafe)
-   safeReport += 1 if isSafe == 1 else 0
+   if isSafe != None:
+      newReport = report
+      newReport.pop(isSafe)
+      evo = getEvoStatus(newReport[0], newReport[1])
+      print("newReport", newReport)
+      isSafe = isReportSafe(newReport, evo)
+   print("ANSWER: ",isSafe)
+   safeReport += 1 if isSafe == None else 0
 
 print(safeReport)
