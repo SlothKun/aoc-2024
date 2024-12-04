@@ -8,25 +8,52 @@ RULE = {
 }
 
 textBlock = []
+validatedCoord = []
+total = 0
 
 with open("../input",'r') as ofile:
     for line in ofile.readlines():
-        textBlock.append(line.strip("\n"))
+        textBlock.append(list(line.strip("\n")))
 
-total = 0
 for lIdx in range(len(textBlock)):
     for cIdx in range(len(textBlock[lIdx])):
         letterRules = RULE[textBlock[lIdx][cIdx]]
         letterRules = [[i for i in letterRules.keys()], [-i for i in letterRules.keys()]]
+
         for rule in letterRules:
-            words={"h": "", "v": "", "d":""}
+            words={"h": "", "v": "", "d":"", "id":""}
+            wordCoords={"h":[],"v":[],"d":[], "id":[]}
             for i in rule:
                 words['h'] += textBlock[lIdx][cIdx+i] if 0 <= cIdx+i < len(textBlock[lIdx]) else ""
+                wordCoords['h'].append((lIdx,cIdx+i))
                 words['v'] += textBlock[lIdx+i][cIdx]  if 0 <= lIdx+i < len(textBlock) else ""
+                wordCoords['v'].append((lIdx+i,cIdx))
                 words['d'] += textBlock[lIdx+i][cIdx+i] if 0 <= cIdx+i < len(textBlock[lIdx]) and 0 <= lIdx+i < len(textBlock) else ""
-            for w in words.values():
-                if w in ["XMAS", "SAMX"]:
-                    print("Word : ", w)
-                    print("Coord :", lIdx, " - ", cIdx)
+                wordCoords['d'].append((lIdx+i,cIdx+i))
+                words['id'] += textBlock[lIdx+i][cIdx-i] if 0 <= cIdx-i < len(textBlock[lIdx]) and 0 <= lIdx+i < len(textBlock) else ""
+                wordCoords['id'].append((lIdx+i,cIdx-i))
+            for cat, w in words.items():
+                if w in ["XMAS", "SAMX"] and wordCoords[cat] not in validatedCoord:
+                    validatedCoord.append(wordCoords[cat])
                     total+=1
+print(len(validatedCoord))
 print(total)
+
+
+print("------DRAWING-----\n")
+coordList = []
+
+for x in validatedCoord:
+    for y in x:
+        coordList.append(y)
+
+for lIdx in range(len(textBlock)):
+    for cIdx in range(len(textBlock[lIdx])):
+        if (lIdx, cIdx) not in coordList:
+            textBlock[lIdx][cIdx] = "."
+
+txt=""
+for x in textBlock:
+    txt+=''.join(x)+"\n"
+
+print(txt)
