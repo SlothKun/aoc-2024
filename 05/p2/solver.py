@@ -47,8 +47,6 @@ with open("../input",'r') as ofile:
             print(line if not validLine else "")
             while not validLine:
                 lineChanged = False
-                #print("new line:", line)
-                #print(pIdx)
                 p = line[pIdx]
                 if not movedLeft:
                     badIdx = getBadRuleIdx(line,p,pIdx,'before')
@@ -57,7 +55,6 @@ with open("../input",'r') as ofile:
                         lineChanged = True
                         line.pop(pIdx)
                         line.insert(badIdx[0], p)
-                        #print("newline transfo bef: ", line)
                 if not movedRight:
                     badIdx = getBadRuleIdx(line,p,pIdx,'after')
                     if len(badIdx) !=0:
@@ -65,7 +62,6 @@ with open("../input",'r') as ofile:
                         lineChanged = True
                         line.pop(pIdx)
                         line.insert(badIdx[0], p)
-                        #print("newline transfo aft: ", line)
                 if isLineValid(line):
                     print("VALID")
                     validLine = True
