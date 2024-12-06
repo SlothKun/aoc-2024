@@ -50,8 +50,8 @@ with open("../input",'r') as ofile:
                 #print("new line:", line)
                 #print(pIdx)
                 p = line[pIdx]
-                badIdx = getBadRuleIdx(line,p,pIdx,'before')
                 if not movedLeft:
+                    badIdx = getBadRuleIdx(line,p,pIdx,'before')
                     if len(badIdx) !=0:
                         movedRight=True
                         lineChanged = True
@@ -78,4 +78,4 @@ with open("../input",'r') as ofile:
                     pIdx+=1
 
 print(total)
-print("--- %s seconds ---" % (time.time() - start_time))
+print("--- %s sec ---" % (time.time() - start_time))
