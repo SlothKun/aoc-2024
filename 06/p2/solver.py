@@ -2,6 +2,8 @@
 import time
 start_time = time.time()
 
+print("\n\n\n\n\n")
+
 validDir = ['up','right','bottom','left']
 moveMap = {'up':(-1,0), 'right':(0,1), 'bottom':(1,0), 'left':(0,-1)}
 dirChange = {'up':'right',
@@ -17,83 +19,146 @@ labMap = []
 allLoops = []
 maxLine = 0
 maxCol = 0
+wallDictX = {}
+wallDictY = {}
+
+def getCloserWall(gPos, gDir, wallCoord):
+    closerSubPos = gPos
+    for c in wallCoord:
+        tmpSubPos = (gPos[0]-c[0], gPos[1]-c[1])
 
 def loopFinder(gdirIdx, gPos, ifPrint=False):
-    looped=False
-    if ifPrint:
-        print("----------- Entering loopFinder :", gPos, validDir[gdirIdx], "-----------")
+    print(f"---------- Entering LoopFinder {gPos, validDir[gdirIdx]} -----------------") if ifPrint else None
     anchor = gPos
     anchorDir = validDir[gdirIdx]
     tmpwallCoord = []
     path = []
     moveVector = moveMap[validDir[gdirIdx]]
     wallCoord = [(gPos[0]+moveVector[0], gPos[1]+moveVector[1])]
-    if ifPrint:
-        print("---> Imaginary wall at", wallCoord[0])
-    while not looped:
-        #if ifPrint:
-            #print(set(path))
-            #print(wallCoord[0] in path)
-            #print("ANCHOR!", anchor)
-            #print("---> Imaginary wall at", wallCoord[0])
-            #print("wallCoord", set(wallCoord))
+    print(f"--> Imaginary wall at {wallCoord[0]}") if ifPrint else None
+    # Add wall to Dict
+    if wallCoord[0][0] not in wallDictX.keys():
+        wallDictX[wallCoord[0][0]] = [(wallCoord[0][0],wallCoord[0][1])]
+    else:
+        wallDictX[wallCoord[0][0]].append((wallCoord[0][0],wallCoord[0][1]))
+    if wallCoord[0][1] not in wallDictY.keys():
+        wallDictY[wallCoord[0][1]] = [(wallCoord[0][0],wallCoord[0][1])]
+    else:
+        wallDictY[wallCoord[0][1]].append((wallCoord[0][0],wallCoord[0][1]))
+    # Sort Dicts
+    print(wallDictX[wallCoord[0][0]]) if ifPrint else None
+    print(wallDictY[wallCoord[0][1]]) if ifPrint else None
+    wallDictX[wallCoord[0][0]].sort(key=lambda tup: tup[0])
+    wallDictY[wallCoord[0][1]].sort(key=lambda tup: tup[0])
 
+    while True:
+        # Rotate
         gdirIdx = (gdirIdx+1)%4
-        gdir = validDir[gdirIdx]
-        moveVector = moveMap[gdir]
-        gPos = path[-1][0] if len(path) != 0 else gPos
-        if ifPrint:
-            print("New position at", gPos)
-            print("pos :", labMap[gPos[0]][gPos[1]])
-            print("Now going", gdir)
-        for i in range(1,max(maxLine, maxCol)):
-            visited = (gPos[0]+moveVector[0]*i, gPos[1]+moveVector[1]*i)
-            #print(visited)
-            if 0 <= visited[0] < maxLine and 0 <= visited[1] < maxCol:
-                if labMap[visited[0]][visited[1]] == '#':
-                    if ifPrint:
-                        print('Hit wall at', visited)
-                    wallCoord.append(visited)
-                    #path.append((visited, gdir))
-                    break
-                else:
-                    #print(visited)
-                    #path.append(visited, gdir)
-                    if (visited == anchor and gdir == anchorDir) or \
-                        ((visited,gdir) in path):
-                        looped = True
-                        break
-                path.append((visited, gdir))
-            else:
-                # out of band
-                if ifPrint:
-                    print("oob at :", visited)
-                return False
-    if ifPrint:
-        print("loopFinder: ", wallCoord)
-    return wallCoord
+        gDir = validDir[gdirIdx]
+        print(f"Current {gPos} Going {gDir}") if ifPrint else None
+        moveVector = moveMap[gDir]
+        gposUpdated = False
+        # Check if wall present
+        # If so TP to wall - moveVector
+        # add wall to wallCoord
+        if gDir in ['up','bottom']:
+            print("Vertical Move") if ifPrint else None
+            if gPos[1] in wallDictY.keys():
+                if gDir == 'up':
+                    print("WALLDICT : ", wallDictY[gPos[1]]) if ifPrint else None
 
+                    for i in range(-1, -len(wallDictY[gPos[1]])-1,-1):
+                        wallPos=wallDictY[gPos[1]][i]
+                        if wallPos[0] < gPos[0]:
+                            print("Wallpos coord :", wallPos) if ifPrint else None
+                            gPos = (wallPos[0]-moveVector[0],wallPos[1]-moveVector[1])
+                            gposUpdated = True
+                            wallCoord.append((wallPos, gDir))
+                            break
+                elif gDir == 'bottom':
+                    print("WALLDICT : ", wallDictY[gPos[1]]) if ifPrint else None
+                    for i in range(len(wallDictY[gPos[1]])):
+                        wallPos=wallDictY[gPos[1]][i]
+                        if wallPos[0] > gPos[0]:
+                            print("Wallpos coord :", wallPos) if ifPrint else None
+                            gPos = (wallPos[0]-moveVector[0],wallPos[1]-moveVector[1])
+                            gposUpdated = True
+                            wallCoord.append((wallPos, gDir))
+                            break
+        elif gDir in ['left', 'right']:
+            print("Horizontal Move") if ifPrint else None
+            if gPos[0] in wallDictX.keys():
+                if gDir == 'left':
+                    print("WALLDICT : ", wallDictX[gPos[0]]) if ifPrint else None
+                    for i in range(-1, -len(wallDictX[gPos[0]])-1, -1):
+                        wallPos=wallDictX[gPos[0]][i]
+                        if wallPos[1] < gPos[1]:
+                            print("Wallpos coord :", wallPos) if ifPrint else None
+                            gPos = (wallPos[0]-moveVector[0],wallPos[1]-moveVector[1])
+                            gposUpdated = True
+                            wallCoord.append((wallPos, gDir))
+                            break
+                if gDir == "right":
+                    print("WALLDICT : ", wallDictX[gPos[0]]) if ifPrint else None
+                    for i in range( len(wallDictX[gPos[0]])):
+                        wallPos=wallDictX[gPos[0]][i]
+                        if wallPos[1] > gPos[1]:
+                            print("Wallpos coord :", wallPos) if ifPrint else None
+                            gPos = (wallPos[0]-moveVector[0],wallPos[1]-moveVector[1])
+                            gposUpdated = True
+                            wallCoord.append((wallPos, gDir))
+                            break
 
-with open("../input",'r') as ofile:
-    lNb = 0
+        # If Gpos not updated, then OOB -> No loop
+        if not gposUpdated:
+            print("gPosNotUpdated - No loop") if ifPrint else None
+            # Del wall from Dict
+            print(wallCoord[0]) if ifPrint else None
+            wallDictX[wallCoord[0][0]].remove(wallCoord[0])
+            wallDictY[wallCoord[0][1]].remove(wallCoord[0])
+            return False
+        # Check for loop (if current (wallPos,gdir) is present more than 1 time)
+        if wallCoord.count((wallPos, gDir)) > 1:
+            print("Loop detected!") if ifPrint else None
+            # Del wall from Dict
+            wallDictX[wallCoord[0][0]].remove(wallCoord[0])
+            wallDictY[wallCoord[0][1]].remove(wallCoord[0])
+            return set(wallCoord)
+
+with open("../tinput",'r') as ofile:
+    lIdx = 0
     for line in ofile.readlines():
         line=line.strip("\n")
         labMap.append(line)
-        if line.find('^') != -1:
-            guardPos = (lNb,line.find("^"))
-            visitedPos.append(guardPos)
-        lNb+=1
+        cIdx = 0
+        for c in line:
+            if c == "^":
+               guardPos = (lIdx, cIdx)
+               visitedPos.append(guardPos)
+            if c == "#":
+                if lIdx not in wallDictX.keys():
+                    wallDictX[lIdx] = [(lIdx,cIdx)]
+                else:
+                    wallDictX[lIdx].append((lIdx,cIdx))
+                if cIdx not in wallDictY.keys():
+                    wallDictY[cIdx] = [(lIdx,cIdx)]
+                else:
+                    wallDictY[cIdx].append((lIdx,cIdx))
+            cIdx += 1
+        lIdx+=1
     maxLine = len(labMap)
     maxCol = len(labMap[0])
     #print(f"line {maxLine} - col {maxCol}")
-
+    print(wallDictX)
+    print(wallDictY)
 
 while not guardLeft:
     isLoop = loopFinder(guardDirIdx, guardPos, False)
+    if guardPos == (7,6):
+        isLoop = loopFinder(guardDirIdx, guardPos, True)
     #print(isLoop)
-    #if isLoop:
-    #    loopFinder(guardDirIdx, guardPos, True)
     if isLoop:
+        #loopFinder(guardDirIdx, guardPos, True)
         print("--- %s seconds ---" % (time.time() - start_time))
         allLoops.append(isLoop)
 
