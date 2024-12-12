@@ -1,4 +1,8 @@
 import copy
+import time
+
+start_time = time.time()
+
 sPosList = []
 defaultTrail = {'0': {'next':'1','coord': []},
         '1': {'next':'2','coord': []},
@@ -14,14 +18,14 @@ defaultTrail = {'0': {'next':'1','coord': []},
 trailMap = []
 total = 0
 
-with open("../tinput1",'r') as ofile:
+with open("../input",'r') as ofile:
     lIdx = 0
     for line in ofile.readlines():
         line = line.strip("\n")
         sPosList += [(lIdx,pos) for pos, char in enumerate(line) if char == '0']
         lIdx+=1
         trailMap.append(line)
-    print(sPosList)
+    #print(sPosList)
 
 for sPos in sPosList:
     stepNb = '0'
@@ -52,11 +56,18 @@ for sPos in sPosList:
                    ((c[0],c[1]+1) not in trail[nextNb]['coord']):
                     trail[nextNb]['coord'].append((c[0],c[1]+1))
         # Get nex step nb
-        print(f'{stepNb} - {trail[stepNb]}')
+        #print(f'{stepNb} - {trail[stepNb]}')
         stepNb = trail[stepNb]['next']
 
-    print(f'{stepNb} - {trail[stepNb]}')
-    print(len(trail['9']['coord']))
+    #print(f'{stepNb} - {trail[stepNb]}')
+    #print(len(trail['9']['coord']))
     total += len(trail['9']['coord'])
 
 print(total)
+
+elapsed_time = time.time() - start_time
+hours, rem = divmod(elapsed_time, 3600)
+minutes, seconds = divmod(rem, 60)
+milliseconds = (seconds - int(seconds)) * 1000
+
+print("Total time : "+f"{int(hours):02}:{int(minutes):02}:{int(seconds):02}:{int(milliseconds):03}")
