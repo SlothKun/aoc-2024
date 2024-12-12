@@ -2,9 +2,10 @@ import copy
 import time
 
 start_time = time.time()
-cacheMult = {}
-cacheSplit = {} 
-ITER = 10
+nbCount = {}
+opCache = {}
+ITER = 75
+total = 0
 
 def getTime(start_time):
     elapsed_time = time.time() - start_time
@@ -13,12 +14,14 @@ def getTime(start_time):
     milliseconds = (seconds - int(seconds)) * 1000
     return f"{int(hours):02}:{int(minutes):02}:{int(seconds):02}:{int(milliseconds):03}"
 
-with open("../tinput2",'r') as ofile:
+with open("../input",'r') as ofile:
     lIdx = 0
     for line in ofile.readlines():
         line = line.strip("\n")
-        stones = [int(s) for s in line.split()]
-print(f"Starting with {stones}\n")
+        for n in line.split():
+            n = int(n)
+            if n not in nbCount.keys(): nbCount[n] = 0
+            nbCount[n] += 1
 
 
 # Train on 0,1,2,3,4,5,6,7,8,9 for 5 iter each
@@ -28,42 +31,31 @@ print(f"Starting with {stones}\n")
 
 
 for i in range(ITER):
-    tmpStones = stones
-    stoneToChange = len(stones)
-    sChanged = 0
-    sIdx = 0
     startIter = time.time()
-    while sChanged < stoneToChange:
-        sInt = stones[sIdx]
+    tmpNbCount = copy.deepcopy(nbCount)
+    for sInt in sorted(nbCount.keys()):
         sStr = str(sInt)
         sLen = len(sStr)
         if sInt == 0: # If stone == 0 : become 1
-            tmpStones[sIdx] = 1
+            if 1 not in tmpNbCount.keys(): tmpNbCount[1] = 0
+            tmpNbCount[1] += nbCount[sInt] if sInt in nbCount.keys() else 1
         elif sLen %2 == 0: # if len(str(stone))%2==0 : 2 stones -> left half / right half (without leading 0)
-            if sInt not in cacheSplit.keys():
-                mid = sLen//2
-                #print(f"sIdx {sIdx} - s {s} : mid{mid}")
-                halfnb = [sStr[:mid], sStr[mid:]]
-                halfnbInt = [int(halfnb[0]),int(halfnb[1])]
-                #print("half nb ")
-                halfnbInt[1] = int(halfnb[1].lstrip('0')) if halfnbInt[1] != 0 else 0
-                #print(f"halfs : {halfnb}")
-                #tmpStones[sIdx] = halfnbInt[1]
-                #tmpStones.insert(sIdx, halfnbInt[0]) # Insert first half before
-                cacheSplit[sInt] = halfnbInt
-            tmpStones[sIdx] = cacheSplit[sInt][1]
-            tmpStones.insert(sIdx, cacheSplit[sInt][0]) # Insert first half before
-            sIdx+=1 # Inc by one because we added 1 elem
-        else: # Else stone*2024
-            if sInt not in cacheMult.keys():
-                cacheMult[sInt] = tmpStones[sIdx] * 2024
-            tmpStones[sIdx] = cacheMult[sInt]
-        sChanged+=1
-        sIdx+=1
-    stones = tmpStones
-    print(f"{i+1}/{ITER} - Length : {len(stones)} - Total : {getTime(start_time)}")
-    print(stones)
-    print(f"Iter time: {getTime(startIter)}")
+            mid = sLen//2
+            halfnb = [sStr[:mid], sStr[mid:]]
+            halfnbInt = [int(halfnb[0]),int(halfnb[1])]
+            halfnbInt[1] = int(halfnb[1].lstrip('0')) if halfnbInt[1] != 0 else 0
 
-print(len(stones))
-getTime(start_time)
+            if halfnbInt[0] not in tmpNbCount.keys(): tmpNbCount[halfnbInt[0]] = 0
+            if halfnbInt[1] not in tmpNbCount.keys(): tmpNbCount[halfnbInt[1]] = 0
+            tmpNbCount[halfnbInt[0]] += nbCount[sInt]
+            tmpNbCount[halfnbInt[1]] += nbCount[sInt]
+        else: # Else stone*2024
+            newNb = sInt * 2024
+            if newNb not in tmpNbCount.keys(): tmpNbCount[newNb] = 0
+            tmpNbCount[newNb] += nbCount[sInt]
+        tmpNbCount[sInt] -= nbCount[sInt]
+    print(f"Iter : {i+1}/{ITER} - Took : {getTime(start_time)}")
+    nbCount = {**nbCount, **tmpNbCount}
+for v in nbCount.values():
+    total+=v
+print(f"\nResult: {total} - Took {getTime(start_time)}")
