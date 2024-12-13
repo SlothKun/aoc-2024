@@ -32,33 +32,77 @@ def getTime(start_time):
 #           price = Z
 farm = []
 nonMappedCoord = []
+mappedCoord = []
 plants = {}
 total = 0
 
-def getRegion(sCoord):
-    pass
+def getRegion(plant, coord, mappedCoord, mappedEdge):
+    mappedCoord.append(coord)
+    #print(f"-- Checking : {coord} --")
+    tCoord = (coord[0]-1,coord[1])
+    bCoord = (coord[0]+1,coord[1])
+    lCoord = (coord[0],coord[1]-1)
+    rCoord = (coord[0],coord[1]+1)
+    if tCoord[0] >= 0 and tCoord not in mappedCoord: # Check top
+        if farm[tCoord[0]][tCoord[1]] == plant:
+            getRegion(plant, tCoord, mappedCoord, mappedEdge)
+        elif tCoord not in mappedCoord:
+                mappedEdge.append(tCoord)
+    elif tCoord not in mappedCoord:
+            mappedEdge.append(tCoord)
+
+    if bCoord[0] < len(farm) and bCoord not in mappedCoord: # check down
+        if farm[bCoord[0]][bCoord[1]] == plant:
+            getRegion(plant, bCoord, mappedCoord, mappedEdge) 
+        elif bCoord not in mappedCoord:
+                mappedEdge.append(bCoord)
+    elif bCoord not in mappedCoord:
+            mappedEdge.append(bCoord)
+
+    if lCoord[1] >= 0 and lCoord not in mappedCoord: #Check left
+        if farm[lCoord[0]][lCoord[1]] == plant:
+            getRegion(plant, lCoord, mappedCoord, mappedEdge)
+        elif lCoord not in mappedCoord:
+                mappedEdge.append(lCoord)
+    elif lCoord not in mappedCoord:
+            mappedEdge.append(lCoord)
+
+    if rCoord[1] < len(farm[0]) and rCoord not in mappedCoord:# check right
+        if farm[rCoord[0]][rCoord[1]] == plant:
+            getRegion(plant, rCoord, mappedCoord, mappedEdge) 
+        elif rCoord not in mappedCoord:
+                mappedEdge.append(rCoord)
+    elif rCoord not in mappedCoord:
+            mappedEdge.append(rCoord)
+
+    return mappedCoord, mappedEdge
 
 # Map the farm
-with open("../tinput",'r') as ofile:
+with open("../input",'r') as ofile:
     lIdx = 0
     for line in ofile.readlines():
         line = line.strip("\n")
         farm.append(line)
-    print(farm)
+    #print(farm)
 
 for l in range(len(farm)):
     nonMappedCoord += [(l,c) for c in range(len(line))]
-print(nonMappedCoord)
+#print(nonMappedCoord)
 
+mappedEdge = []
 while len(nonMappedCoord) != 0:
+    letter = farm[nonMappedCoord[0][0]][nonMappedCoord[0][1]]
     # Get region
-    mappedCoord, price = getRegion(nonMappedCoord[0])
-    total += price
+    mappedCoord, mappedEdge = getRegion(letter, nonMappedCoord[0], [], [])
+    #getRegion(letter, nonMappedCoord[0], [], [])
+    perimeter = len(mappedEdge)
+    area = len(set(mappedCoord))
+    print(f"{letter} : a{area} * p{perimeter} = {area*perimeter}")
+    #print(f"MappedCoord :", set(mappedCoord))
+    #print(f"mappedEdge :", set(mappedEdge))
+    total += area*perimeter
     # remove mapped Coord from list (symmetric difference)
     nonMappedCoord = list(set(nonMappedCoord) ^ set(mappedCoord))
-
-
-
-
+    #print("nonMappedCoord: ", nonMappedCoord)
 
 print(f"Answer : {total} - Program took : {getTime(start_time)} to run.")
