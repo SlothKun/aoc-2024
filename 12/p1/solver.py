@@ -22,18 +22,9 @@ def getTime(start_time):
 # Add price to total
 # Also create a list of already mapped Coord
 
-# Data struct :
-# Dict :
-#   plant Lettre :
-#       regionX :
-#           coordList = []
-#           area = X
-#           perimeter = Y
-#           price = Z
 farm = []
 nonMappedCoord = []
 mappedCoord = []
-plants = {}
 total = 0
 
 def getRegion(plant, coord, mappedCoord, mappedEdge):
