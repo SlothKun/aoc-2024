@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import time
+from itertools import groupby
+from operator import itemgetter
 
 start_time = time.time()
 
@@ -38,38 +40,55 @@ def getRegion(plant, coord, mappedCoord, mappedEdge):
         if farm[tCoord[0]][tCoord[1]] == plant:
             getRegion(plant, tCoord, mappedCoord, mappedEdge)
         elif tCoord not in mappedCoord:
-                mappedEdge.append((tCoord[0],'up'))
+            mappedEdge['up'].append(tCoord)
     elif tCoord not in mappedCoord:
-            mappedEdge.append((tCoord[0],'up'))
+        mappedEdge['up'].append(tCoord)
 
     if bCoord[0] < len(farm) and bCoord not in mappedCoord: # check down
         if farm[bCoord[0]][bCoord[1]] == plant:
             getRegion(plant, bCoord, mappedCoord, mappedEdge) 
         elif bCoord not in mappedCoord:
-                mappedEdge.append((bCoord[0],'down'))
+            mappedEdge['down'].append(bCoord)
     elif bCoord not in mappedCoord:
-            mappedEdge.append((bCoord[0],'down'))
+        mappedEdge['down'].append(bCoord)
 
     if lCoord[1] >= 0 and lCoord not in mappedCoord: #Check left
         if farm[lCoord[0]][lCoord[1]] == plant:
             getRegion(plant, lCoord, mappedCoord, mappedEdge)
         elif lCoord not in mappedCoord:
-                mappedEdge.append((lCoord[1],'left'))
+            mappedEdge['left'].append(lCoord)
     elif lCoord not in mappedCoord:
-            mappedEdge.append((lCoord[1],'left'))
+        mappedEdge['left'].append(lCoord)
 
     if rCoord[1] < len(farm[0]) and rCoord not in mappedCoord:# check right
         if farm[rCoord[0]][rCoord[1]] == plant:
             getRegion(plant, rCoord, mappedCoord, mappedEdge) 
         elif rCoord not in mappedCoord:
-                mappedEdge.append((rCoord[1],'right'))
+            mappedEdge['right'].append(rCoord)
     elif rCoord not in mappedCoord:
-            mappedEdge.append((rCoord[1],'right'))
-
+        mappedEdge['right'].append(rCoord)
     return mappedCoord, mappedEdge
 
+def checkContinuity(mapEdge, dir):
+    perimeter = 0
+    y = 0 if dir in ['left', 'right'] else 1
+    x = 1 if dir in ['left', 'right'] else 0
+    for key, coor in groupby(mapEdge, lambda c: c[x]):
+        coor = sorted(list(coor))
+        coorToCmp = coor[0][y]
+        for i in coor[1:]:
+            if i[y]-1 != coorToCmp:
+                perimeter+=1
+            coorToCmp = i[y]
+        perimeter+=1
+    return perimeter
+
+def func(val):
+    return val[1]
+
+
 # Map the farm
-with open("../tinput3",'r') as ofile:
+with open("../input",'r') as ofile:
     lIdx = 0
     for line in ofile.readlines():
         line = line.strip("\n")
@@ -84,16 +103,17 @@ mappedEdge = []
 while len(nonMappedCoord) != 0:
     letter = farm[nonMappedCoord[0][0]][nonMappedCoord[0][1]]
     # Get region
-    mappedCoord, mappedEdge = getRegion(letter, nonMappedCoord[0], [], [])
-    #getRegion(letter, nonMappedCoord[0], [], [])
-    perimeter = len(set(mappedEdge))
+    mappedCoord, mappedEdge = getRegion(letter, nonMappedCoord[0], [], {'up':[],'down':[],'left':[],'right':[]})
+    perimeter = 0
     area = len(set(mappedCoord))
+    perimeter += checkContinuity(sorted(mappedEdge['up']), 'up')
+    perimeter += checkContinuity(sorted(mappedEdge['down']), 'down')
+    mappedEdge['left'].sort(key=func)
+    perimeter += checkContinuity(mappedEdge['left'], 'left')
+    mappedEdge['right'].sort(key=func)
+    perimeter += checkContinuity(mappedEdge['right'], 'right')
     print(f"{letter} : a{area} * p{perimeter} = {area*perimeter}")
-    print(f"MappedCoord :", sorted(list(set(mappedCoord))))
-    print(f"mappedEdge :", sorted(list(set(mappedEdge))))
     total += area*perimeter
     # remove mapped Coord from list (symmetric difference)
     nonMappedCoord = list(set(nonMappedCoord) ^ set(mappedCoord))
-    #print("nonMappedCoord: ", nonMappedCoord)
-
 print(f"Answer : {total} - Program took : {getTime(start_time)} to run.")
