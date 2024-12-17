@@ -19,13 +19,17 @@ dirVector = [(-1,0), (0,1), (1,0), (0,-1)]
 visited = []
 reinDirIdx = 1
 walls = []
-nodeGraph = {}
 end = (-1,-1)
 rein = (-1,-1)
 maxLine = 0
 maxCol = 0
+junctions = {}
+corner = {}
+empty = []
+lines = {}
+paths = {}
 
-with open("../tinput",'r') as ofile:
+with open("../tinput1",'r') as ofile:
     lIdx = 0
     maze = []
     for line in ofile.readlines():
@@ -38,6 +42,9 @@ with open("../tinput",'r') as ofile:
                 end = (lIdx, cIdx)
             elif c == 'S':
                 rein = (lIdx, cIdx)
+                empty.append((lIdx, cIdx))
+            else:
+                empty.append((lIdx, cIdx))
             cIdx+=1
         maze.append(line)
         visited.append([False for i in range(cIdx)])
@@ -45,44 +52,40 @@ with open("../tinput",'r') as ofile:
     maxLine=lIdx
     maxCol=len(line)
 
-#print(walls)
+print()
 #print(rein)
 #print(end)
 #print(maxLine)
 #print(maxCol)
 
+# Get junctions
+for e in empty:
+    tmpJ = []
+    for v in dirVector:
+        if (e[0]+v[0],e[1]+v[1]) not in walls:
+            tmpJ.append((e[0]+v[0],e[1]+v[1]))
+    if len(tmpJ) > 2:
+        junctions[e] = tmpJ
+        empty.remove(e)
+    elif len(tmpJ) == 2:
+        corner[e] = tmpJ
+    else:
+        pass
+
+
+print(f"Walls : {walls} - {len(walls)}\n")
+print(f"Junctions : {junctions} - {len(junctions)}\n")
+print(f"Empty : {empty} - {len(empty)}\n")
+print(f"Corner : {corner} - {len(corner)}\n")
+
+cPos = rein
+pathId = 0
+#while True:
+    #nPos =
 
 
 
-# Build graph
-"""
-for lIdx in range(1, maxLine-1):
-    for cIdx in range(1, maxCol-1):
-        if (lIdx, cIdx) not in walls:
-            nodeGraph[(lIdx, cIdx)] = {'cost': [],'coor':[], 'dirIdx':[]}
-            # Create a set of unvisited node
-            visited.append((lIdx, cIdx))
-            for vIdx in range(len(dirVector)):
-                v = dirVector[vIdx]
-                if (lIdx+v[0], lIdx+v[1]) not in walls:
-                    nodeGraph[(lIdx, cIdx)]['coor'].append((lIdx+v[0], lIdx+v[1]))
-                    nodeGraph[(lIdx, cIdx)]['dirIdx'].append(vIdx)
-                    nodeGraph[(lIdx, cIdx)]['cost'].append(-1)
-"""
+    
 
-
-# Find shortest Path using Dijkstra
-def dijkstra(maze, visited, start, end):
-    solution = []
-    queue = []
-    visited[start[0]][start[1]] = True
-
-
-
-
-print(nodeGraph)
-print(visited)
-print(maze)
-#dijkstra(maze, visited, start, end)
 
 print(f"Answer : {total} - Program took : {getTime(start_time)} to run.")
