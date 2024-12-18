@@ -23,7 +23,6 @@ empty = []
 lines = []
 goodPaths = {}
 
-
 def getDir(cc, nc):
     return dirV.index((nc[0]-cc[0], nc[1]-cc[1]))
 
@@ -70,7 +69,7 @@ def checkDeadEnd(cId, nPos, cDirIdx):
 #   Empty space coord
 #   End Coor
 #   Start Coor
-with open("../input",'r') as ofile:
+with open("../tinput6",'r') as ofile:
     lIdx = 0
     maze = []
     for line in ofile.readlines():
@@ -87,16 +86,19 @@ with open("../input",'r') as ofile:
             else:
                 empty.append((lIdx, cIdx))
             cIdx+=1
-        maze.append(line)
+        maze.append(line.strip(" "))
         lIdx+=1
 
 for e in empty:
     tmpJ = []
     for v in dirV:
-        if (e[0]+v[0],e[1]+v[1]) not in walls:
+        if (e[0]+v[0],e[1]+v[1]) not in walls and 0 <= e[0]+v[0] < len(maze) and 0 <= e[1]+v[1] < len(maze[0]):
             tmpJ.append((e[0]+v[0],e[1]+v[1]))
-    if len(tmpJ) > 2: # Get all junctions 
-        junctions[e] = tmpJ
+    if len(tmpJ) > 2: # Get all junctions
+        junctions[e] = {}
+        for p in tmpJ:
+            junctions[e][p] = {'nextJ':(-1,-1), 'cost':0}
+        #junctions[e] = tmpJ
         empty.remove(e)
     elif len(tmpJ) == 2 and ((tmpJ[0][0]-e[0],tmpJ[0][1]-e[1]) != (-(tmpJ[1][0]-e[0]),-(tmpJ[1][1]-e[1]))): # Get all Corners
         corner[e] = tmpJ
@@ -108,8 +110,51 @@ altPath = [pId]
 cPath = [cPos]
 
 print("corner: ",corner)
-print("Junctions: ", junctions)
+print("\nJunctions: ", junctions)
+# Junction
+#   jCoor : {
+#       (path1,path1): {'nextJ':(nj,nj), cost:''}
+#       (path2,path2): {'nextJ':(nj,nj), cost:''}
+#       (path3,path3): {'nextJ':(nj,nj), cost:''}
+#   }
+print("\n")
+for jc, nc in junctions.items():
+    wPath = []
+    print(jc, nc)
+    for cc, cd in nc.items():
+        tmpC = cc
+        tmpPath = [cc]
+        tmpDir = getDir(jc,cc)
+        print(cc, cd)
+        print(tmpPath)
+        print(allDir[tmpDir])
+        while tmpPath[-1] not in junctions.keys() and tmpPath[-1] == cc:
+            tmpC = getNewPos(tmpC, tmpDir)
+            if tmpC in corner:
+                tnPos = corner[tmpC][1] if tmpPath[-1] == corner[tmpC][0] else corner[tmpC][0]
+                tmpDir = getDir(tmpC,tnPos)
+                tmpPath.append(tnPos)
+            elif tmpC in walls:
+                # dead end, we remove the path
+                print("get walled idiot")
+                break
+            elif tmpC == end:
+                pass
+            tmpPath.append(tmpC)
+        print(tmpPath)
+        print(tmpC)
+    print("\n\n\n\n")
 
+
+
+
+
+
+
+
+
+
+"""
 goodPaths[pId] = {'cost': 0, 'dir':cDirIdx, 'path':cPath[:], 'lastInter': (-1,-1)}
 pId+=1
 
@@ -208,3 +253,4 @@ print(f"\nAnswer : {total} - Program took : {getTime(start_time)} to run.")
 
 # 153613 Too High
 # 153606 too High
+"""
