@@ -1,0 +1,181 @@
+corner:  {(1, 1): [(1, 2), (2, 1)], (1, 3): [(2, 3), (1, 2)], (2, 6): [(2, 7), (3, 6)], (4, 3): [(3, 3), (4, 4)], (4, 12): [(3, 12), (4, 11)], (6, 6): [(5, 6), (6, 7)], (6, 12): [(7, 12), (6, 11)]}
+
+Junctions:  {(2, 12): {(1, 12): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}, (3, 12): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}, (2, 11): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}}, (4, 6): {(3, 6): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}, (4, 7): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}, (5, 6): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}, (4, 5): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}}, (8, 1): {(7, 1): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}, (8, 2): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}}, (8, 12): {(7, 12): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}, (9, 12): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}, (8, 11): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}}}
+
+ -- MAPPING JUNCTIONS -- 
+
+- - Junction (2, 12) - Mult path : {(1, 12): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}, (3, 12): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}, (2, 11): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}}
+
+
+- Path (1, 12) - Data: {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}
+path currently taking [(2, 12), (1, 12)]
+[(2, 12), (1, 12)]
+After run : {'nextBranch': (2, 12), 'nextJ': (1, 12), 'cost': 1, 'dir': 0}
+
+- Path (3, 12) - Data: {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}
+path currently taking [(2, 12), (3, 12)]
+[(2, 12), (3, 12), (3, 12), (4, 11), (4, 11), (4, 10), (4, 9), (4, 8), (4, 7), (4, 6)]
+After run : {'nextBranch': (4, 7), 'nextJ': (4, 6), 'cost': 1008, 'dir': 3}
+
+- Path (2, 11) - Data: {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}
+path currently taking [(2, 12), (2, 11)]
+[(2, 12), (2, 11), (2, 11), (2, 10), (2, 9), (2, 8), (2, 7), (3, 6), (3, 6), (4, 6)]
+After run : {'nextBranch': (3, 6), 'nextJ': (4, 6), 'cost': 1008, 'dir': 2}
+
+
+
+- - Junction (4, 6) - Mult path : {(3, 6): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}, (4, 7): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}, (5, 6): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}, (4, 5): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}}
+
+
+- Path (3, 6) - Data: {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}
+path currently taking [(4, 6), (3, 6)]
+[(4, 6), (3, 6), (3, 6), (2, 7), (2, 7), (2, 8), (2, 9), (2, 10), (2, 11), (2, 12)]
+After run : {'nextBranch': (2, 11), 'nextJ': (2, 12), 'cost': 1008, 'dir': 1}
+
+- Path (4, 7) - Data: {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}
+path currently taking [(4, 6), (4, 7)]
+[(4, 6), (4, 7), (4, 7), (4, 8), (4, 9), (4, 10), (4, 11), (3, 12), (3, 12), (2, 12)]
+After run : {'nextBranch': (3, 12), 'nextJ': (2, 12), 'cost': 1008, 'dir': 0}
+
+- Path (5, 6) - Data: {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}
+path currently taking [(4, 6), (5, 6)]
+[(4, 6), (5, 6), (5, 6), (6, 7), (6, 7), (6, 8), (6, 9), (6, 10), (6, 11), (7, 12), (7, 12), (8, 12)]
+After run : {'nextBranch': (7, 12), 'nextJ': (8, 12), 'cost': 2010, 'dir': 2}
+
+- Path (4, 5) - Data: {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}
+path currently taking [(4, 6), (4, 5)]
+[(4, 6), (4, 5), (4, 5), (4, 4), (3, 3), (3, 3), (2, 3), (1, 2), (1, 2), (2, 1), (2, 1), (3, 1), (4, 1), (5, 1), (6, 1), (7, 1), (8, 1)]
+After run : {'nextBranch': (7, 1), 'nextJ': (8, 1), 'cost': 3015, 'dir': 2}
+
+
+
+- - Junction (8, 1) - Mult path : {(7, 1): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}, (8, 2): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}}
+
+
+- Path (7, 1) - Data: {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}
+path currently taking [(8, 1), (7, 1)]
+[(8, 1), (7, 1), (7, 1), (6, 1), (5, 1), (4, 1), (3, 1), (2, 1), (1, 2), (1, 2), (2, 3), (2, 3), (3, 3), (4, 4), (4, 4), (4, 5), (4, 6)]
+After run : {'nextBranch': (4, 5), 'nextJ': (4, 6), 'cost': 3015, 'dir': 1}
+
+- Path (8, 2) - Data: {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}
+path currently taking [(8, 1), (8, 2)]
+[(8, 1), (8, 2), (8, 2), (8, 3), (8, 4), (8, 5), (8, 6), (8, 7), (8, 8), (8, 9), (8, 10), (8, 11), (8, 12)]
+After run : {'nextBranch': (8, 11), 'nextJ': (8, 12), 'cost': 11, 'dir': 1}
+
+
+
+- - Junction (8, 12) - Mult path : {(7, 12): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}, (9, 12): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}, (8, 11): {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}}
+
+
+- Path (7, 12) - Data: {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}
+path currently taking [(8, 12), (7, 12)]
+[(8, 12), (7, 12), (7, 12), (6, 11), (6, 11), (6, 10), (6, 9), (6, 8), (6, 7), (5, 6), (5, 6), (4, 6)]
+After run : {'nextBranch': (5, 6), 'nextJ': (4, 6), 'cost': 2010, 'dir': 0}
+
+- Path (9, 12) - Data: {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}
+path currently taking [(8, 12), (9, 12)]
+wall
+
+- Path (8, 11) - Data: {'nextBranch': (-1, -1), 'nextJ': (-1, -1), 'cost': 0}
+path currently taking [(8, 12), (8, 11)]
+[(8, 12), (8, 11), (8, 11), (8, 10), (8, 9), (8, 8), (8, 7), (8, 6), (8, 5), (8, 4), (8, 3), (8, 2), (8, 1)]
+After run : {'nextBranch': (8, 2), 'nextJ': (8, 1), 'cost': 11, 'dir': 3}
+
+
+
+All Junction : {(2, 12): {(1, 12): {'nextBranch': (2, 12), 'nextJ': (1, 12), 'cost': 1, 'dir': 0}, (3, 12): {'nextBranch': (4, 7), 'nextJ': (4, 6), 'cost': 1008, 'dir': 3}, (2, 11): {'nextBranch': (3, 6), 'nextJ': (4, 6), 'cost': 1008, 'dir': 2}}, (4, 6): {(3, 6): {'nextBranch': (2, 11), 'nextJ': (2, 12), 'cost': 1008, 'dir': 1}, (4, 7): {'nextBranch': (3, 12), 'nextJ': (2, 12), 'cost': 1008, 'dir': 0}, (5, 6): {'nextBranch': (7, 12), 'nextJ': (8, 12), 'cost': 2010, 'dir': 2}, (4, 5): {'nextBranch': (7, 1), 'nextJ': (8, 1), 'cost': 3015, 'dir': 2}}, (8, 1): {(7, 1): {'nextBranch': (4, 5), 'nextJ': (4, 6), 'cost': 3015, 'dir': 1}, (8, 2): {'nextBranch': (8, 11), 'nextJ': (8, 12), 'cost': 11, 'dir': 1}}, (8, 12): {(7, 12): {'nextBranch': (5, 6), 'nextJ': (4, 6), 'cost': 2010, 'dir': 0}, (8, 11): {'nextBranch': (8, 2), 'nextJ': (8, 1), 'cost': 11, 'dir': 3}}}
+
+All Junction key: [(2, 12), (4, 6), (8, 1), (8, 12)]
+
+(7, 1) -- {'nextBranch': (4, 5), 'nextJ': (4, 6), 'cost': 3015, 'dir': 1}
+(8, 2) -- {'nextBranch': (8, 11), 'nextJ': (8, 12), 'cost': 11, 'dir': 1}
+
+--- STARTING PATHFINDING ----
+
+visitedBranch:  []
+goodPath:  {0: {'path': [(4, 6), (8, 1)], 'cCoor': (4, 6), 'dir': 0, 'cost': 4015, 'lastJunc': (4, 6)}, 1: {'path': [(8, 12), (8, 1)], 'cCoor': (8, 12), 'dir': 1, 'cost': 11, 'lastJunc': (8, 12)}}
+altPath: [0, 1]
+
+
+Current Path ID : 0 | Current Path Direction 'up' | Current Position '(4, 6)' | Cost '4015' | Queue 2
+P : (3, 6) -- PData : {'nextBranch': (2, 11), 'nextJ': (2, 12), 'cost': 1008, 'dir': 1}
+P : (4, 7) -- PData : {'nextBranch': (3, 12), 'nextJ': (2, 12), 'cost': 1008, 'dir': 0}
+Creating new alt path n°2 - {'path': [(4, 6), (8, 1), (2, 12)], 'cCoor': (2, 12), 'dir': 1, 'cost': 1008, 'lastJunc': (2, 12)}
+P : (5, 6) -- PData : {'nextBranch': (7, 12), 'nextJ': (8, 12), 'cost': 2010, 'dir': 2}
+Creating new alt path n°3 - {'path': [(4, 6), (8, 1), (8, 12)], 'cCoor': (8, 12), 'dir': 2, 'cost': 3010, 'lastJunc': (8, 12)}
+P : (4, 5) -- PData : {'nextBranch': (7, 1), 'nextJ': (8, 1), 'cost': 3015, 'dir': 2}
+(8, 1) in [(4, 6), (8, 1)]
+Not creating new path
+
+Current Path ID : 0 | Current Path Direction 'up' | Current Position '(2, 12)' | Cost '6023' | Queue 4
+P : (1, 12) -- PData : {'nextBranch': (2, 12), 'nextJ': (1, 12), 'cost': 1, 'dir': 0}
+0 got to the end - path {'path': [(4, 6), (8, 1), (2, 12), (1, 12)], 'cCoor': (1, 12), 'dir': 0, 'cost': 6024, 'lastJunc': (1, 12)}
+P : (3, 12) -- PData : {'nextBranch': (4, 7), 'nextJ': (4, 6), 'cost': 1008, 'dir': 3}
+(4, 6) in [(4, 6), (8, 1), (2, 12)]
+Not creating new path
+P : (2, 11) -- PData : {'nextBranch': (3, 6), 'nextJ': (4, 6), 'cost': 1008, 'dir': 2}
+(4, 6) in [(4, 6), (8, 1), (2, 12)]
+Not creating new path
+
+Current Path ID : 1 | Current Path Direction 'right' | Current Position '(8, 12)' | Cost '11' | Queue 3
+P : (7, 12) -- PData : {'nextBranch': (5, 6), 'nextJ': (4, 6), 'cost': 2010, 'dir': 0}
+P : (8, 11) -- PData : {'nextBranch': (8, 2), 'nextJ': (8, 1), 'cost': 11, 'dir': 3}
+(8, 1) in [(8, 12), (8, 1)]
+Not creating new path
+
+Current Path ID : 1 | Current Path Direction 'up' | Current Position '(4, 6)' | Cost '3021' | Queue 3
+P : (3, 6) -- PData : {'nextBranch': (2, 11), 'nextJ': (2, 12), 'cost': 1008, 'dir': 1}
+P : (4, 7) -- PData : {'nextBranch': (3, 12), 'nextJ': (2, 12), 'cost': 1008, 'dir': 0}
+Creating new alt path n°4 - {'path': [(8, 12), (8, 1), (4, 6), (2, 12)], 'cCoor': (2, 12), 'dir': 1, 'cost': 1008, 'lastJunc': (2, 12)}
+P : (5, 6) -- PData : {'nextBranch': (7, 12), 'nextJ': (8, 12), 'cost': 2010, 'dir': 2}
+(8, 12) in [(8, 12), (8, 1), (4, 6)]
+Not creating new path
+P : (4, 5) -- PData : {'nextBranch': (7, 1), 'nextJ': (8, 1), 'cost': 3015, 'dir': 2}
+(8, 1) in [(8, 12), (8, 1), (4, 6)]
+Not creating new path
+
+Current Path ID : 1 | Current Path Direction 'up' | Current Position '(2, 12)' | Cost '5029' | Queue 4
+P : (1, 12) -- PData : {'nextBranch': (2, 12), 'nextJ': (1, 12), 'cost': 1, 'dir': 0}
+1 got to the end - path {'path': [(8, 12), (8, 1), (4, 6), (2, 12), (1, 12)], 'cCoor': (1, 12), 'dir': 0, 'cost': 5030, 'lastJunc': (1, 12)}
+P : (3, 12) -- PData : {'nextBranch': (4, 7), 'nextJ': (4, 6), 'cost': 1008, 'dir': 3}
+(4, 6) in [(8, 12), (8, 1), (4, 6), (2, 12)]
+Not creating new path
+P : (2, 11) -- PData : {'nextBranch': (3, 6), 'nextJ': (4, 6), 'cost': 1008, 'dir': 2}
+(4, 6) in [(8, 12), (8, 1), (4, 6), (2, 12)]
+Not creating new path
+
+Current Path ID : 2 | Current Path Direction 'right' | Current Position '(2, 12)' | Cost '1008' | Queue 3
+P : (1, 12) -- PData : {'nextBranch': (2, 12), 'nextJ': (1, 12), 'cost': 1, 'dir': 0}
+2 got to the end - path {'path': [(4, 6), (8, 1), (2, 12), (1, 12)], 'cCoor': (1, 12), 'dir': 0, 'cost': 2009, 'lastJunc': (1, 12)}
+P : (3, 12) -- PData : {'nextBranch': (4, 7), 'nextJ': (4, 6), 'cost': 1008, 'dir': 3}
+(4, 6) in [(4, 6), (8, 1), (2, 12)]
+Not creating new path
+P : (2, 11) -- PData : {'nextBranch': (3, 6), 'nextJ': (4, 6), 'cost': 1008, 'dir': 2}
+(4, 6) in [(4, 6), (8, 1), (2, 12)]
+Not creating new path
+
+Current Path ID : 3 | Current Path Direction 'down' | Current Position '(8, 12)' | Cost '3010' | Queue 2
+P : (7, 12) -- PData : {'nextBranch': (5, 6), 'nextJ': (4, 6), 'cost': 2010, 'dir': 0}
+3 is dead end 2
+{'path': [(4, 6), (8, 1), (8, 12)], 'cCoor': (8, 12), 'dir': 2, 'cost': 3010, 'lastJunc': (8, 12)}
+P : (8, 11) -- PData : {'nextBranch': (8, 2), 'nextJ': (8, 1), 'cost': 11, 'dir': 3}
+(8, 1) in [(4, 6), (8, 1), (8, 12)]
+Not creating new path
+
+Current Path ID : 4 | Current Path Direction 'right' | Current Position '(2, 12)' | Cost '1008' | Queue 1
+P : (1, 12) -- PData : {'nextBranch': (2, 12), 'nextJ': (1, 12), 'cost': 1, 'dir': 0}
+4 got to the end - path {'path': [(8, 12), (8, 1), (4, 6), (2, 12), (1, 12)], 'cCoor': (1, 12), 'dir': 0, 'cost': 2009, 'lastJunc': (1, 12)}
+P : (3, 12) -- PData : {'nextBranch': (4, 7), 'nextJ': (4, 6), 'cost': 1008, 'dir': 3}
+(4, 6) in [(8, 12), (8, 1), (4, 6), (2, 12)]
+Not creating new path
+P : (2, 11) -- PData : {'nextBranch': (3, 6), 'nextJ': (4, 6), 'cost': 1008, 'dir': 2}
+(4, 6) in [(8, 12), (8, 1), (4, 6), (2, 12)]
+Not creating new path
+
+
+goodPaths: {0: {'path': [(4, 6), (8, 1), (2, 12), (1, 12)], 'cCoor': (1, 12), 'dir': 0, 'cost': 6024, 'lastJunc': (1, 12)}, 1: {'path': [(8, 12), (8, 1), (4, 6), (2, 12), (1, 12)], 'cCoor': (1, 12), 'dir': 0, 'cost': 5030, 'lastJunc': (1, 12)}, 2: {'path': [(4, 6), (8, 1), (2, 12), (1, 12)], 'cCoor': (1, 12), 'dir': 0, 'cost': 2009, 'lastJunc': (1, 12)}, 4: {'path': [(8, 12), (8, 1), (4, 6), (2, 12), (1, 12)], 'cCoor': (1, 12), 'dir': 0, 'cost': 2009, 'lastJunc': (1, 12)}}
+
+{6024: 1, 5030: 1, 2009: 2}
+2009
+
+Answer : 0 - Program took : 00:00:00:000 to run.
