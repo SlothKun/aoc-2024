@@ -58,6 +58,7 @@ def checkDeadEnd(cId, nPos, cDirIdx):
                 junctions[goodPaths[cId]['lastInter']].remove(goodPaths[cId]['path'][lastInterIdx+1])
         del goodPaths[cId]
         altPath.pop(0)
+        print(len(altPath))
         if len(altPath) != 0:
             pass
             #print(f"    Next Path '{altPath[0]}' - Will start from coords : {goodPaths[altPath[0]]}")
@@ -159,6 +160,7 @@ while len(altPath) != 0:
             #print(f"    Path {cId} - Junction at '{cPos}' is dead End")
             del goodPaths[cId]
             altPath.pop(0)
+            print(len(altPath))
         else:
             tmpPath = goodPaths[cId]['path'][:]
             tmpCost = goodPaths[cId]['cost']
@@ -178,6 +180,7 @@ while len(altPath) != 0:
     elif cPos == end: # Got to the End
         #print(f"    Path {cId} - End detected at '{cPos}' - Cost {goodPaths[cId]['cost']}")
         altPath.pop(0)
+        print(len(altPath))
         if len(altPath) != 0:
             pass
             #print(f"    Next Path '{altPath[0]}' - Will start from coords : {goodPaths[altPath[0]]}")

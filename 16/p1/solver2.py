@@ -29,47 +29,40 @@ def getDir(cc, nc):
 def getNewPos(cp, vIdx):
     return (cp[0]+dirV[vIdx][0], cp[1]+dirV[vIdx][1])
 
-def updatePathDict(cId, cPos, vIdx, rotation, lastInter=(-1,-1), new=False, nId=-1, nPath=[], nCost=0):
-    if cPos in goodPaths[cId]['path']:
-        pass
-        #print(f"     DUPLICATE coor {cPos}")
+def updatePathDict(cId, cPos, vIdx, cost, lastJunc, rotated, new=False, nId=-1, nPath=[]):
+    if rotated:
+        cost+=1000
     if not new:
         if len(nPath) == 0:
             goodPaths[cId]['path'].append(cPos)
         else:
             goodPaths[cId]['path'] = nPath[:] + [cPos]
         goodPaths[cId]['dir'] = vIdx
-        goodPaths[cId]['cost'] += 1001 if rotation else 1
-        goodPaths[cId]['lastInter'] = lastInter
+        goodPaths[cId]['cost'] += cost
+        goodPaths[cId]['lastJunc'] = lastJunc
     else:
-        goodPaths[nId] = {'cost': 0, 'dir': -1,'path':[]}
+        goodPaths[nId] = {}
         goodPaths[nId]['path']= goodPaths[cId]['path'][:] + [cPos] if len(nPath) == 0 else nPath[:] + [cPos]
         goodPaths[nId]['dir'] = vIdx
-        goodPaths[nId]['cost'] += 1001+nCost if rotation else nCost+1
-        goodPaths[nId]['lastInter'] = lastInter
+        goodPaths[nId]['cost'] = cost
+        goodPaths[nId]['lastJunc'] = lastJunc
 
-def checkDeadEnd(cId, nPos, cDirIdx):
-    if nPos in goodPaths[cId]['path'] or nPos in walls: # Next pos is Loop or Deadend
-        #print(f"    Path {cId} - Loop or deadEnd detected at '{cPos}' when moving to '{nPos}'")
-        if goodPaths[cId]['lastInter'] != (-1,-1):
-            lastInterIdx = goodPaths[cId]['path'].index(goodPaths[cId]['lastInter'])
-            if goodPaths[cId]['path'][lastInterIdx+1] in junctions[goodPaths[cId]['lastInter']]:
-                junctions[goodPaths[cId]['lastInter']].remove(goodPaths[cId]['path'][lastInterIdx+1])
-        del goodPaths[cId]
-        altPath.pop(0)
-        if len(altPath) != 0:
-            pass
-            #print(f"    Next Path '{altPath[0]}' - Will start from coords : {goodPaths[altPath[0]]}")
+def isDeadEnd(cId):
+    if goodPaths[cId]['path'].count(goodPaths[cId]['path'][-1]) >= 2: # Loop
         return True
-    else:
+    elif goodPaths[cId]['lastJunc'] == (-1,-1): # in a wall
+        return True
+    else: 
         return False
+    
+    
 
 # Get:
 #   wall coord
 #   Empty space coord
 #   End Coor
 #   Start Coor
-with open("../tinput6",'r') as ofile:
+with open("../tinput9",'r') as ofile:
     lIdx = 0
     maze = []
     for line in ofile.readlines():
@@ -94,7 +87,7 @@ for e in empty:
     for v in dirV:
         if (e[0]+v[0],e[1]+v[1]) not in walls and 0 <= e[0]+v[0] < len(maze) and 0 <= e[1]+v[1] < len(maze[0]):
             tmpJ.append((e[0]+v[0],e[1]+v[1]))
-    if len(tmpJ) > 2: # Get all junctions
+    if len(tmpJ) > 2 or e == start: # Get all junctions
         junctions[e] = {}
         for p in tmpJ:
             junctions[e][p] = {'nextJ':(-1,-1), 'cost':0}
@@ -106,7 +99,7 @@ for e in empty:
 cPos = start
 cDirIdx = startDirIdx 
 pId = 0
-altPath = [pId]
+altPath = []
 cPath = [cPos]
 
 print("corner: ",corner)
@@ -120,137 +113,114 @@ print("\nJunctions: ", junctions)
 print("\n")
 for jc, nc in junctions.items():
     wPath = []
-    print(jc, nc)
+    print(f"- - Junction {jc} - Mult path : {nc}\n")
     for cc, cd in nc.items():
         tmpC = cc
         tmpPath = [cc]
         tmpDir = getDir(jc,cc)
-        print(cc, cd)
-        print(tmpPath)
-        print(allDir[tmpDir])
-        while tmpPath[-1] not in junctions.keys() and tmpPath[-1] == cc:
-            tmpC = getNewPos(tmpC, tmpDir)
-            if tmpC in corner:
+        tmpCost = 0
+        print(f"\n- Path {cc} - Data: {cd}")
+        print(f"path currently taking {tmpPath}")
+
+        while tmpPath[-1] not in list(junctions.keys()) and (tmpPath[-1] != end or tmpPath[-1] != start):
+            print(f"TMP COOR : {tmpC} - START : {start}")
+            if tmpC == start:
+                tmpCost += 1
+                tmpPath.append(tmpC)
+                break
+            elif tmpC in corner:
                 tnPos = corner[tmpC][1] if tmpPath[-1] == corner[tmpC][0] else corner[tmpC][0]
+                tmpCost += 1001
                 tmpDir = getDir(tmpC,tnPos)
                 tmpPath.append(tnPos)
+            elif tmpC == end:
+                tmpCost += 1
+                break
             elif tmpC in walls:
                 # dead end, we remove the path
-                print("get walled idiot")
+                tmpPath = []
                 break
-            elif tmpC == end:
-                pass
-            tmpPath.append(tmpC)
-        print(tmpPath)
-        print(tmpC)
-    print("\n\n\n\n")
+            else:
+                tmpPath.append(tmpC)
+                tmpCost += 1
+            tmpC = getNewPos(tmpC, tmpDir)
+        
+        if len(tmpPath) != 0:
+            cd['nextJ'] = tmpPath[-1]
+            cd['cost'] = tmpCost
+            print(f"After run : {cd}")
+    print("\n\n")
+print(f"All Junction : {junctions}\n")
+print(f"All Junction key: {list(junctions.keys())}\n")
+
+# Delete all path that lead to (-1,-1) Or dont idc
 
 
-
-
-
-
-
-
-
-
-"""
-goodPaths[pId] = {'cost': 0, 'dir':cDirIdx, 'path':cPath[:], 'lastInter': (-1,-1)}
-pId+=1
-
-# Get starting Paths - OK
-if cPos in corner.keys():
-    if corner[cPos][0] == (cPos[0]+dirV[cDirIdx][0], cPos[1]+dirV[cDirIdx][1]):
-        updatePathDict(pId-1, corner[cPos][1], getDir(cPos, corner[cPos][1]), True, new=True, nId=pId)
-        updatePathDict(pId-1, corner[cPos][0], cDirIdx, False)
-    else:
-        updatePathDict(pId-1, corner[cPos][0], getDir(cPos, corner[cPos][0]), True, new=True, nId=pId)
-        updatePathDict(pId-1, corner[cPos][1], cDirIdx, False)
+# Setup Starting PATH | Path only contain START - Junctions - End
+for p, pd in junctions[start].items():
+    print(f"{p} -- {pd}")
+    rotated = False if getDir(start, p) == startDirIdx else True
+    updatePathDict(pId, pd['nextJ'], getDir(start, p), pd['cost'], pd['nextJ'], rotated, new=True, nId=pId, nPath=cPath)
     altPath.append(pId)
     pId+=1
-elif (cPos[0]+dirV[cDirIdx][0], cPos[1]+dirV[cDirIdx][1]) in walls:
-    cDirIdx -= 1
-    updatePathDict(pId-1, getNewPos(cPos, cDirIdx), cDirIdx, True)
-else:
-    updatePathDict(pId-1, getNewPos(cPos, cDirIdx), cDirIdx, False)
 
-print(f"Good path at init : {goodPaths}")
-#print(f"Alt paths at init : {altPath}\n")
-
+print("goodPath: ", goodPaths)
+print(f"altPath: {altPath}\n\n")
 
 # Don't stop until Queue is empty (all path taken)
 while len(altPath) != 0:
+    # Get id Data
     cId = altPath[0]
     cDirIdx = goodPaths[cId]['dir']
     cPos = goodPaths[cId]['path'][-1]
-#    print(f"\nCurrent Path ID : {cId} | \
-#Current Path Direction '{allDir[cDirIdx]}' | \
-#Current Position '{cPos}' | \
-#Cost '{goodPaths[cId]['cost']}' | \
-#Queue {altPath}")
-
-    if cPos in corner.keys(): # Corner detected
-        nPos = corner[cPos][0] if corner[cPos][0] not in goodPaths[cId]['path'] else corner[cPos][1]
-        updatePathDict(cId, nPos, getDir(cPos, nPos), True)
-        #print(f"    Path {cId} - corner detected at '{cPos}' - Going to '{nPos}' - new Dir '{allDir[goodPaths[cId]['dir']]}'")
+    print(f"\nCurrent Path ID : {cId} | \
+Current Path Direction '{allDir[cDirIdx]}' | \
+Current Position '{cPos}' | \
+Cost '{goodPaths[cId]['cost']}' | \
+Queue {altPath}")
     
-    
-    elif cPos in junctions.keys(): # Junction detected
-        tmpJ = junctions[cPos][:]
-        if goodPaths[cId]['path'][-2] in tmpJ:
-            tmpJ.remove(goodPaths[cId]['path'][-2])
+    firstPathTaken = False
+    for p, pd in junctions[cPos].items(): # for each branch in junction
+        print(f"P : {p} -- PData : {pd}")
+        rotated = False if getDir(cPos, p) == cDirIdx else True
+        if not firstPathTaken: # If it's the first time we move, update current branch
+            firstPathTaken = True
+            updatePathDict(cId, pd['nextJ'], getDir(cPos, p), pd['cost'], pd['nextJ'], rotated, new=False)
+            if isDeadEnd(cId): # if after update, it's a dead end, remove it and go to the next ID
+                print(f"{cId} is dead end")
+                print(goodPaths[cId])
+                del goodPaths[cId]
+                altPath.pop(0)
+            elif goodPaths[cId]['path'][-1] == end: # If after update, we got to the end, go it the next ID
+                print(f"{cId} got to the end - path {goodPaths[cId]}")
+                altPath.pop(0)
+        else: # not the first time, then create new branch
+            updatePathDict(cId, pd['nextJ'], getDir(cPos, p), pd['cost'], pd['nextJ'], rotated, new=True, nId=pId, nPath=cPath)
+            if not isDeadEnd(pId): # if after update, it's NOT a dead end, we add it to the altPath and increase Pid
+                print(f"Creating new alt path n°{pId} - goodPaths {goodPaths[pId]}")
+                altPath.append(pId)
+                pId+=1
+            else:
+                print(f"Not creating new path")
+    time.sleep(2)
 
-        if len(tmpJ) == 0:
-            #print(f"    Path {cId} - Junction at '{cPos}' is dead End")
-            del goodPaths[cId]
-            altPath.pop(0)
-        else:
-            tmpPath = goodPaths[cId]['path'][:]
-            tmpCost = goodPaths[cId]['cost']
-            fPathTaken = False
-            for j in tmpJ:
-                rotated = True if getDir(cPos, j) != cDirIdx else False
-                if not fPathTaken:
-                    updatePathDict(cId, j, getDir(cPos, j), rotated, lastInter=cPos, nPath=tmpPath, nCost=tmpCost)
-                    #print(f"    Path {cId} - Junction detected at '{cPos}' - {cId} will continue on nCoor {goodPaths[cId]['path'][-1]}) ")
-                    fPathTaken = True
-                else:
-                    updatePathDict(cId, j, getDir(cPos, j), rotated, lastInter=cPos, new=True, nId=pId, nPath=tmpPath, nCost=tmpCost)
-                    #print(f"    Path {cId} - Junction detected at '{cPos}' - New Path '{pId}' added (with nCoor {goodPaths[pId]['path'][-1]}) and cost '{goodPaths[pId]['cost']}' ")
-                    altPath.append(pId)
-                    pId+=1
 
-    elif cPos == end: # Got to the End
-        #print(f"    Path {cId} - End detected at '{cPos}' - Cost {goodPaths[cId]['cost']}")
-        altPath.pop(0)
-        if len(altPath) != 0:
-            pass
-            #print(f"    Next Path '{altPath[0]}' - Will start from coords : {goodPaths[altPath[0]]}")
 
-    else: # Move ahead
-        nPos = getNewPos(cPos, cDirIdx)
-        if not checkDeadEnd(cId, nPos, cDirIdx):
-            updatePathDict(cId, nPos, cDirIdx, False)
 
+# get the lower score
+scores = {}
 for gpId, gpVal in goodPaths.items():
-    if total == 0 or gpVal['cost'] < total:
-        winId = gpId
-        winner = gpVal
-        total = gpVal['cost']
+    if gpVal['cost'] not in list(scores.keys()):
+        scores[gpVal['cost']] = 1
+    else:
+        scores[gpVal['cost']] += 1
 
-print()
-print()
-print()
-print()
-print(goodPaths)
-print()
-print()
-print()
-print()
+print(f"\n\ngoodPaths: {goodPaths}\n")
 
-print(winId, winner)
+winnerScore = min(list(scores.keys()))
+
 print(f"\nAnswer : {total} - Program took : {getTime(start_time)} to run.")
 
 # 153613 Too High
 # 153606 too High
-"""
+
